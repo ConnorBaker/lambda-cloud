@@ -1,0 +1,21 @@
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = ["flit_core"]
+
+[project]
+authors = [{ name = "Connor Baker", email = "connor.baker@tweag.io" }]
+classifiers = ["Programming Language :: Python :: 3"]
+dependencies = ["click>=8.1.3", "pydantic>=1.10.8", "requests>=2.31"]
+dynamic = ["version", "description"]
+keywords = ["nix", "lambda", "cloud", "vm", "ai", "ml"]
+license = { text = "BSD-3-Clause" }
+name = "lambda_cloud"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[tool.black]
+line-length = 120
+
+[tool.ruff]
+line-length = 120
+select = ["E", "F", "B"]
