@@ -5,6 +5,10 @@
       url = "github:hercules-ci/flake-parts";
     };
     nixpkgs.url = "github:NixOS/nixpkgs";
+    poetry2nix = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-community/poetry2nix";
+    };
   };
 
   nixConfig = {

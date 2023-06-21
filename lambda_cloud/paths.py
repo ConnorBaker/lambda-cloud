@@ -2,12 +2,12 @@ import logging
 
 import requests
 
-from lambda_cloud.components import request_bodies, responses, schemas
+from lambda_cloud import openapi
 
-URL = "https://cloud.lambdalabs.com/api/v1/"
+URL = "https://cloud.lambdalabs.com/api/v1"
 
 
-def instance_types(api_key: str) -> responses.InstanceTypes:
+def instance_types(api_key: str) -> openapi.InstanceTypesGetResponse:
     """
     Returns a detailed list of the instance types offered by Lambda GPU
     Cloud. The details include the regions, if any, in which each instance
@@ -22,10 +22,10 @@ def instance_types(api_key: str) -> responses.InstanceTypes:
         headers={"Authorization": f"Bearer {api_key}"},
     )
     response.raise_for_status()
-    return responses.InstanceTypes(**response.json())
+    return openapi.InstanceTypesGetResponse.parse_raw(response.content)
 
 
-def list_instances(api_key: str) -> responses.Instances:
+def list_instances(api_key: str) -> openapi.InstancesGetResponse:
     """
     Retrieves a detailed list of running instances.
 
@@ -38,10 +38,10 @@ def list_instances(api_key: str) -> responses.Instances:
         headers={"Authorization": f"Bearer {api_key}"},
     )
     response.raise_for_status()
-    return responses.Instances(**response.json())
+    return openapi.InstancesGetResponse.parse_raw(response.content)
 
 
-def get_instance(api_key: str, id: schemas.InstanceId) -> responses.Instance:
+def get_instance(api_key: str, id: str) -> openapi.InstancesIdGetResponse:
     """
     Retrieves details of a specific instance, including whether or not the
     instance is running.
@@ -56,10 +56,12 @@ def get_instance(api_key: str, id: schemas.InstanceId) -> responses.Instance:
         headers={"Authorization": f"Bearer {api_key}"},
     )
     response.raise_for_status()
-    return responses.Instance(**response.json())
+    return openapi.InstancesIdGetResponse.parse_raw(response.content)
 
 
-def launch_instance(api_key: str, launch: request_bodies.Launch) -> responses.Launch:
+def launch_instance(
+    api_key: str, launch: openapi.InstanceOperationsLaunchPostRequest
+) -> openapi.InstanceOperationsLaunchPostResponse:
     """
     Launches one or more instances of a given instance type.
 
@@ -74,13 +76,15 @@ def launch_instance(api_key: str, launch: request_bodies.Launch) -> responses.La
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         },
-        data=launch.model_dump_json(),
+        data=launch.json(),
     )
     response.raise_for_status()
-    return responses.Launch(**response.json())
+    return openapi.InstanceOperationsLaunchPostResponse.parse_raw(response.content)
 
 
-def terminate_instance(api_key: str, terminate: request_bodies.Terminate) -> responses.Terminate:
+def terminate_instance(
+    api_key: str, terminate: openapi.InstanceOperationsTerminatePostRequest
+) -> openapi.InstanceOperationsTerminatePostResponse:
     """
     Terminates a given instance.
     """
@@ -91,13 +95,15 @@ def terminate_instance(api_key: str, terminate: request_bodies.Terminate) -> res
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         },
-        data=terminate.model_dump_json(),
+        data=terminate.json(),
     )
     response.raise_for_status()
-    return responses.Terminate(**response.json())
+    return openapi.InstanceOperationsTerminatePostResponse.parse_raw(response.content)
 
 
-def restart_instance(api_key: str, restart: request_bodies.Restart) -> responses.Restart:
+def restart_instance(
+    api_key: str, restart: openapi.InstanceOperationsRestartPostRequest
+) -> openapi.InstanceOperationsRestartPostResponse:
     """
     Restarts the given instances.
     """
@@ -108,13 +114,13 @@ def restart_instance(api_key: str, restart: request_bodies.Restart) -> responses
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         },
-        data=restart.model_dump_json(),
+        data=restart.json(),
     )
     response.raise_for_status()
-    return responses.Restart(**response.json())
+    return openapi.InstanceOperationsRestartPostResponse.parse_raw(response.content)
 
 
-def list_ssh_keys(api_key: str) -> responses.SshKeys:
+def list_ssh_keys(api_key: str) -> openapi.SshKeysGetResponse:
     """
     Retrieve the list of SSH keys
 
@@ -124,10 +130,12 @@ def list_ssh_keys(api_key: str) -> responses.SshKeys:
     logging.info("Getting SSH keys")
     response = requests.get(f"{URL}/ssh-keys", headers={"Authorization": f"Bearer {api_key}"})
     response.raise_for_status()
-    return responses.SshKeys(**response.json())
+    return openapi.SshKeysGetResponse.parse_raw(response.content)
 
 
-def add_ssh_key(api_key: str, add_ssh_key: request_bodies.AddSSHKey) -> responses.AddSSHKey:
+def add_ssh_key(
+    api_key: str, add_ssh_key: openapi.SshKeysPostRequest
+) -> openapi.SshKeysPostResponse:
     """
     Add an SSH key
 
@@ -160,13 +168,13 @@ def add_ssh_key(api_key: str, add_ssh_key: request_bodies.AddSSHKey) -> response
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         },
-        data=add_ssh_key.model_dump_json(),
+        data=add_ssh_key.json(),
     )
     response.raise_for_status()
-    return responses.AddSSHKey(**response.json())
+    return openapi.SshKeysPostResponse.parse_raw(response.content)
 
 
-def delete_ssh_key(api_key: str, ssh_key_id: schemas.SshKeyId) -> None:
+def delete_ssh_key(api_key: str, id: str) -> None:
     """
     Delete an SSH key.
 
@@ -186,7 +194,7 @@ def delete_ssh_key(api_key: str, ssh_key_id: schemas.SshKeyId) -> None:
     return
 
 
-def list_file_systems(api_key: str) -> responses.FileSystems:
+def list_file_systems(api_key: str) -> openapi.FileSystemsGetResponse:
     """
     Retrieve the list of file systems
 
@@ -196,4 +204,4 @@ def list_file_systems(api_key: str) -> responses.FileSystems:
     logging.info("Getting file systems")
     response = requests.get(f"{URL}/file-systems", headers={"Authorization": f"Bearer {api_key}"})
     response.raise_for_status()
-    return responses.FileSystems(**response.json())
+    return openapi.FileSystemsGetResponse.parse_raw(response.content)
