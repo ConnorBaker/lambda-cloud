@@ -26,6 +26,15 @@ def api_launch_instance(
     # Sanity check that there's only one matching instance type
     if len(matching_instances) == 0:
         logging.error(f"No available instances found for {instance_type_name}.")
+        logging.error(
+            "Consider one of these available instance types: "
+            + ", ".join(
+                [
+                    available_instance_type.instance_type.name
+                    for available_instance_type in available_instance_types
+                ]
+            )
+        )
         sys.exit(1)
 
     if len(matching_instances) > 1:
