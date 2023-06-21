@@ -76,7 +76,7 @@ def launch_instance(
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         },
-        data=launch.json(),
+        data=launch.json(exclude_none=True),
     )
     response.raise_for_status()
     return openapi.InstanceOperationsLaunchPostResponse.parse_raw(response.content)
@@ -95,7 +95,7 @@ def terminate_instance(
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         },
-        data=terminate.json(),
+        data=terminate.json(exclude_none=True),
     )
     response.raise_for_status()
     return openapi.InstanceOperationsTerminatePostResponse.parse_raw(response.content)
@@ -114,7 +114,7 @@ def restart_instance(
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         },
-        data=restart.json(),
+        data=restart.json(exclude_none=True),
     )
     response.raise_for_status()
     return openapi.InstanceOperationsRestartPostResponse.parse_raw(response.content)
@@ -168,7 +168,7 @@ def add_ssh_key(
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         },
-        data=add_ssh_key.json(),
+        data=add_ssh_key.json(exclude_none=True),
     )
     response.raise_for_status()
     return openapi.SshKeysPostResponse.parse_raw(response.content)

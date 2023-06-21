@@ -19,7 +19,7 @@ def api_wait_for_status(
 ) -> openapi.Instance:
     logging.info(
         f"Waiting for instance {instance_id} to be {instance_status}, will query status every"
-        " {frequency}s."
+        f" {frequency}s."
     )
     details: openapi.InstancesIdGetResponse = paths.get_instance(api_key, instance_id)
     actual_status: InstanceStatus = details.data.status
@@ -31,6 +31,7 @@ def api_wait_for_status(
                 " exiting with error..."
             )
             sys.exit(1)
+        logging.info(f"Instance {instance_id} is {actual_status}, waiting...")
         time.sleep(frequency)
         details = paths.get_instance(api_key, instance_id)
         actual_status = details.data.status
