@@ -14,7 +14,7 @@ from lambda_cloud.cli import (
 from lambda_cloud.types import InstanceStatus
 
 
-def api_wait_for_status(
+def api_wait_for_instance_status(
     api_key: str, instance_id: str, instance_status: InstanceStatus, timeout: int, frequency: int
 ) -> openapi.Instance:
     logging.info(
@@ -56,7 +56,7 @@ def api_wait_for_status(
     show_default=True,
     type=click.IntRange(min=1),
 )
-def wait_for_status(
+def wait_for_instance_status(
     api_key: str,
     instance_id: str,
     instance_status: InstanceStatus,
@@ -64,7 +64,7 @@ def wait_for_status(
     frequency: int,
 ) -> None:
     """Wait for instance to reach status."""
-    details: openapi.Instance = api_wait_for_status(
+    details: openapi.Instance = api_wait_for_instance_status(
         api_key, instance_id, instance_status, timeout, frequency
     )
     json.dump(
